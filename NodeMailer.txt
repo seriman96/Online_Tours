@@ -1,0 +1,61 @@
+//Nodemailer installation
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i nodemailer
+
+added 1 package, and audited 288 packages in 16s
+
+61 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>
+
+express-rate-limit package installation used to set the nber of request from one ip in order to limit it by blocking it
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i express-rate-limit
+
+added 1 package, and audited 289 packages in 16s
+
+61 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>
+
+helmet package installation
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i helmet
+
+added 1 package, and audited 290 packages in 16s
+
+61 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>
+ 
+//2 packages used to improve application security: express-mongo-sanitize n xss-clean where xss is for cross site scrypting
+//2 packages installation
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i express-mongo-sanitize
+added 1 package, and audited 291 packages in 15s
+
+61 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i xss-clean
+
+added 2 packages, and audited 293 packages in 3s
+
+61 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>
+
+//to uninstall a package we used: npm uninstall nameOfPackage exple xss
+
+//HTTP Parameter Pollution(hpp) package installation 
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i hpp
+61 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>

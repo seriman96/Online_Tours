@@ -1,0 +1,40 @@
+//- we used cmd-shift-p to apply pug beauty intentation 
+
+doctype html
+html
+  head
+    //- extends head block here and with a append techniq to the tour.pug
+
+    meta(charset='UTF-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+
+    title Natours Tours | #{title}
+    link(rel="stylesheet" href="/css/style.css")
+    link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+  body
+    include _header1
+
+    span(style="font-size: 1.6rem;text-decoration: none;font-weight: 700;margin-left:200px;color:#1572ac;")= `Welcome ${user.name.split(' ')[0]} to Elearning Forum.Please login to the system to complete your registration `
+    main.main
+      .login-form
+        h2.heading-secondary.ma-bt-lg Log into your account
+        form.form.form--login1
+          .form__group
+            label.form__label(for='email') Email address
+            input#email.form__input(type='email', placeholder='you@example.com', required)
+          .form__group.ma-bt-md
+            label.form__label(for='password') Password
+            input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+          .form__group
+            button.btn.btn--green Login
+            a.nav__el.nav__el--forgetpassword(href='/forgotPassword',style='color:#1572ac; margin-left:60px;font-size:12px;') Forgot Password
+
+
+
+    include _footer
+    script(src='//code.jquery.com/jquery-1.9.1.js')
+    script(src='//code.jquery.com/ui/1.10.4/jquery-ui.js')
+    //-script(src='/js/jsfile.js')
+    script(src='https://js.stripe.com/v3/')
+    script(src='/js/bundle.js', nonce="12331")

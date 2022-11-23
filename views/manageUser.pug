@@ -1,0 +1,57 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+    //-input(type='hidden', id='top5', value='/read-5')
+    //-input(type='hidden', id='top5', value='/course-stats')
+    //-input(type='hidden', id='top5', value='/month-course')
+    li(class=`${active ? 'side-nav--active' : ''} `)
+        a(href=`${link}`)
+            svg
+                use(xlink:href=`img/icons.svg#icon-${icon}`)
+            | #{text}
+
+block content
+    main.main
+        .user-view
+            nav.user-view__menu
+                ul.side-nav
+                    +navItem('#', 'Create users', 'menu', true)
+                    +navItem(`/update-user`, 'Update users', 'map')
+                    +navItem('/delete-user', 'Delete users', 'delete')   
+                    +navItem(`/search-user`, 'Search users', 'search')
+                    +navItem(`/course-stats`, 'Tours statistics', 'thermometer')
+                    +navItem('/read-5', 'Top-5-cheap-tours', 'book-open')
+                    +navItem(`/month-course`, 'Monthly tours', 'calendar')
+  
+
+            .user-view__content(style='margin-left:30px;')
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-lg Creating a user 
+
+                    //-with API
+                form.form.form--signupUsr
+                    .form__group
+                        label.form__label(for='name') Username
+                        input#name.form__input(type='text', placeholder='Mishibishi Bella', required)
+
+                        label.form__label(for='email') Email address
+                        input#email.form__input(type='email', placeholder='you@example.com', required)
+
+                        //- label.form__label(for='name') Contact
+                        //- input#contact.form__input(type='text', placeholder='9800001100', required)
+                    .form__group.ma-bt-md
+                        label.form__label(for='password') Password
+                        input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+
+                        label.form__label(for='password') Password Confirm
+                        input#passwordconfirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
+
+                        label.form__label(for='email') Role
+                        select#type.form__input(name='type', required)
+                            option(value='user') user
+                            option(value='admin') admin
+                            option(value='guide') guide
+                            option(value='lead-guide') lead-guide
+                                        
+                    .form__group
+                        button.btn.btn--green Create

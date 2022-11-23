@@ -1,0 +1,171 @@
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours> npm init
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help init` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install <pkg>` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+package name: (4-natours) Natours
+Sorry, name can no longer contain capital letters.
+package name: (4-natours) natours
+version: (1.0.0)
+description: Learnig node, express and mongoDB
+entry point: (index.js) app.js
+test command:
+git repository:
+keywords:
+author: doumbia seriman
+license: (ISC)
+About to write to D:\PROJECT\complete-node-bootcamp-master\4-natours\package.json:
+
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "Learnig node, express and mongoDB",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "doumbia seriman",
+  "license": "ISC"
+}
+
+
+Is this OK? (yes)
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours> cd starter
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm init
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help init` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install <pkg>` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+package name: (starter) natours
+version: (1.0.0)
+description: Learning node, express and mongoDB
+entry point: (index.js) app.js
+test command:
+git repository:
+keywords:
+author: seriman doumbia
+license: (ISC)
+About to write to D:\PROJECT\complete-node-bootcamp-master\4-natours\starter\package.json:
+
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "Learning node, express and mongoDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "seriman doumbia",
+  "license": "ISC"
+}
+
+
+Is this OK? (yes)
+//installing express framework version 4
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i express@4 //install express v.4
+
+added 50 packages, and audited 51 packages in 15s
+
+2 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> 
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> nodemon app.js
+[nodemon] 2.0.15
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node app.js`
+App running on port 3000
+
+//morgan is a very popular logging middleware it allowed us to see the requested data means gives info about req in console and it makes our development little bit easier
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i morgan
+
+added 5 packages, and audited 56 packages in 18s
+
+2 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> 
+
+
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "Learning node, express and mongoDB",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js" /*start will replace nodemon server.js when runing application with this we'll execute only npm start to run the app*/
+     "start:dev": "nodemon server.js",/*start:dev will replace nodemon server.js when runing application on development mode or env with this we'll execute only npm start to run the app*/
+    "start:prod": "NODE_ENV=production nodemon server.js"  /*start:prod will replace nodemon server.js when runing application on production mode or env with this we'll execute only npm start to run the app*/
+},
+  "author": "seriman doumbia",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3",
+    "morgan": "^1.10.0"
+  }
+}
+config.env
+//This file is env variable configuration
+NODE_ENV = development
+PORT = 3000
+USER = seriman
+PASSWORD = 123456
+
+//how to connect this config.env file to the node app
+to do that we should install dotenv package
+
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i dotenv
+
+added 1 package, and audited 57 packages in 3s
+
+2 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>
+
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm run start:prod
+
+> natours@1.0.0 start:prod
+> NODE_ENV=production nodemon server.js
+
+'NODE_ENV' is not recognized as an internal or external command,
+operable program or batch file.
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm install -g win-node-env
+
+added 1 package, and audited 2 packages in 23s
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm run start:prod //now solved
+
+ESLint is basically a program that scan our code in order to find the potential code error 
+//installing multiple packages at the same time
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i eslint prettier eslint-config-prettier eslint-plugin-prettier eslint-config-airbnb eslint-plugin-node eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react --save-dev
+
+added 186 packages, and audited 243 packages in 1m
+
+57 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>
+config.env
+NODE_ENV = development
+PORT = 8000
+USERNAME = Admin
+PASSWORD = 123456

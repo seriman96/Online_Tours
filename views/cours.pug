@@ -1,0 +1,113 @@
+extends base
+
+mixin navItem(link, text, icon, active)
+    li(class=`${active ? 'side-nav--active' : ''} `)
+        a(href=`${link}`)
+            svg
+                use(xlink:href=`img/icons.svg#icon-${icon}`)
+            | #{text}
+
+block content
+    main.main
+        .user-view
+            nav.user-view__menu
+                ul.side-nav
+                    +navItem('#', 'Create tours', 'menu', true)
+                    +navItem('/read', 'Read Top tours', 'book-open')
+                    +navItem(`/update`, 'Update tours', 'map')
+                    +navItem(`/upd`, 'Upload tours image', 'file')
+                    +navItem('/delete', 'Delete tours', 'delete')   
+                    +navItem(`/course`, 'Search tours', 'search')
+
+            .user-view__content
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-md Create tours
+
+                    //-without API when we need to upload file we'll add enctype
+                    //- form.form.form-user-data(action='/submit-user-data', method='POST', enctype='multipart/form-data')
+
+                    //-with API
+                    form.form.form-user-course(enctype='multipart/form-data')
+                        .form__group
+                            label.form__label(for='name') tours name
+                            input#name.form__input(type='text', required, name='name')
+                            label.form__label(for='name') Duration
+                            input#duration.form__input(type='number', required, name='duration')
+                            label.form__label(for='name') Max Group Size
+                            input#maxgroupsize.form__input(type='number', required, name='maxGroupSize')
+                            label.form__label(for='email') Difficulty
+                            input#difficulty.form__input(list='email', required, name='difficulty')
+                            datalist#email
+                                option(value='easy')
+                                option(value='medium')
+                                option(value='difficult')
+                            label.form__label(for='email') Ratings Average 
+                            input#average.form__input(type='number', min=1, max=5, name='ratingsAverage')
+                            label.form__label(for='email') Ratings Quantity 
+                            input#quantity.form__input(type='number', name='ratingsQuantity')
+
+                            .accordion
+                                input.accordion-select(type="radio" name="select")
+                                .accordion-title
+                                    label.form__label(for='email') Guide     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nabla;
+                                .accordion-content
+                                    - var iu = 0
+                                    each ui, i in ud 
+                                        //- var i = 0
+                                        input.form__input(type='checkbox', name='guides', value=`${ui._id}`, id=`guide${i}`)
+                                        label.form__label(for='email')=`${ui.name}`
+                                        //-input#guides.form__input(type='hidden', value=`${i+1}`)
+                                        - iu += 1
+                                    input#guides.form__input(type='hidden', value=`${iu}`)
+
+                            .accordion
+                                input.accordion-select(type="radio" name="select")
+                                .accordion-title
+                                    label.form__label(for='email') Start Date   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nabla;
+                                .accordion-content
+                                    - var iu = 0
+                                    each star in [1, 2, 3, 4, 5] 
+                                        input.form__input(type='date', name=`startdates`, id=`startdate_${star}`)
+                                        //-input#start.form__input(type='hidden', value=`${star}`)
+                                        - iu += 1
+                                    input#start.form__input(type='hidden', value=`${iu}`)
+
+                        .form__group.ma-bt-md
+                            label.form__label(for='name') Price
+                            input#price.form__input(type='number', required, name='price')
+                            label.form__label(for='name') Discount Price
+                            input#discountprice.form__input(type='number', required, name='priceDiscount')
+                            label.form__label(for='name') Summary
+                            textarea#summary.form__input(type='text', required, name='summary', height:600, width:520)
+                            label.form__label(for='name') Description
+                            textarea#description.form__input(type='text', required, name='description', height:700, width:520)
+                            //- label.form__label(for='name') Cours category
+                            //- input#course.form__input(type='text', required, name='category')
+                            //- thinking about to add locations field and startLocation fields
+                            
+                        .form__group.form__photo-upload
+
+                            .accordion
+                                input.accordion-select(type="radio" name="select")
+                                .accordion-title
+                                    label.form__label(for='email') Images   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nabla;
+                                .accordion-content
+                                    - var iu = 0
+                                    each star in [1, 2, 3]
+                                        label(for='photo', style='display:block;background-color:#cdffdf;')=`Images${iu+1}` 
+                                        input.form__upload1(type='file', accept='image/*', name=`images`, id=`photo_${star}`, required)
+                                        - iu += 1
+                                    input#images.form__input(type='hidden', value=`${iu}`)
+
+                            //-.form__group.form__photo-upload
+                            //-.line &nbsp;
+                            
+                        .form__group.form__photo-upload
+
+                            label.form__user-photo(for='name') Image cover
+                            //- accept='image/*' will accept all type of image , class='imageCover' , multiple='multiple'
+                            input.form__upload(type='file', accept='image/*', id='photo1', name='imageCover', class=`imageCover`, required)
+                            label(for='photo1') Image Cover
+
+                        .form__group.right
+                            button.btn.btn--small.btn--green Create tours

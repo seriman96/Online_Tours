@@ -1,0 +1,48 @@
+extends base
+
+block content
+    main.main
+        .card-container
+            .card
+                .card__header
+                    .card__picture
+                        .card__picture-overlay &nbsp;
+                        img.card__picture-img(src=`/img/tours/${trs.imageCover}`, alt=`${trs.name}`)
+                    h3.heading-tertirary
+                        span= trs.name
+
+                .card__details
+                    h4.card__sub-heading= `${trs.difficulty} ${trs.duration}-day cours`
+                    p.card__text= trs.summary
+                    .card__data
+                        svg.card__icon
+                            use(xlink:href="/img/icons.svg#icon-dollar-sign")
+                        span= trs.price
+                    .card__data
+                        svg.card__icon
+                            use(xlink:href='/img/icons.svg#icon-calendar')
+                        span= trs.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
+                    .card__data
+                        svg.card__icon
+                            use(xlink:href="/img/icons.svg#icon-user")
+                        span= `rating (${trs.ratingsQuantity})`
+                    .card__data
+                        a.btn.btn--green.btn--small(href=`/tour/${trs.slug}`) Details
+
+        .user-view(style="max-width: 80rem;min-height: 60vh;position:absolute;right:30px;top:50px;")
+            .user-view__content
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-md Updating Reviews
+
+                    form.form.form--reviews
+                        .form__group
+                            label.form__label(for='name') Review
+                            textarea#review.form__input(type='text', required, name='review', height:600, width:520)
+                        .form__group.ma-bt-md
+                            label.form__label(for='email') rating 
+                            input#rating.form__input(type='number', min=1, max=5, required, name='rating')
+                            input#user-id.form__input(type='hidden', value=`${review.user._id}`)
+                            input#cours-id.form__input(type='hidden', value=`${review._id}`)
+
+                        .form__group.right
+                            button.btn.btn--small.btn--reviewUpd(style='background:#1572ac;color:white;') Submit

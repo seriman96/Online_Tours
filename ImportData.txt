@@ -1,0 +1,21 @@
+S D:\PROJECT\complete-node-bootcamp-master\4-natours> cd starter
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> node dev-data/data/import-dev-data.js       
+[
+]
+DB connection successful!
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> node dev-data/data/import-dev-data.js --import
+[
+  'C:\\Program Files\\nodejs\\node.exe',
+  'D:\\PROJECT\\complete-node-bootcamp-master\\4-natours\\starter\\dev-data\\data\\import-dev-data.js',    
+]
+DB connection successful!
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> node dev-data/data/import-dev-data.js --deleDB 
+connection successful!
+Data successfully deleted
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> node dev-data/data/import-dev-data.js --deleDB 
+connection successful!
+Data successfully deleted
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> node dev-data/data/import-dev-data.js --import
+DB connection successful!
+Data successfully loaded
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> 

@@ -1,0 +1,20 @@
+.form__group.form__photo-upload
+                            //-input#cours-id.form__input(type='hidden', value=`${review._id}`)
+                            .accordion
+                                input.accordion-select(type="radio" name="select")
+                                .accordion-title
+                                    label.form__label(for='email') Images   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nabla;
+                                .accordion-content
+                                    - var iu = 0
+                                    each star in review.images
+                                        label(for='photo', style='display:block;background-color:#cdffdf;')=`Images${iu+1}` 
+                                        input.form__upload1(type='file', accept='image/*',value=`${star}`, name=`images`, id=`photo_${iu}`, required)
+                                        - iu += 1
+                                    input#images.form__input(type='hidden', value=`${iu}`)
+
+                        form__group.form__photo-upload
+
+                            label.form__user-photo(for='name') Image cover
+                            //- accept='image/*' will accept all type of image , class='imageCover' , multiple='multiple'
+                            input.form__upload(type='file', accept='image/*', id='photo1', name='imageCover', value=`${review.imageCover}`, class=`imageCover`, required)
+                            label(for='photo1') Image Cover

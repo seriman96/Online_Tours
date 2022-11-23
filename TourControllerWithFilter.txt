@@ -1,0 +1,312 @@
+const fs = require('fs');
+const Tour = require('./../models/tourModel') //importing the tour models from tourModel.js file as we're MVC
+
+//implemented route to be exported here for middleware implementation in order to manage limit n sort param with coming req
+exports.aliasTopTours = (req, res, next) =>{
+    //127.0.0.1:8000/api/v1/tours?limit=5&sort=-ratingsAverage,price
+    req.query.limit = '5';                      //everything comes like string here
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingsAverage,summary,difficulty';  //in order to specify some fields these r the permited fields here
+    next();
+};  
+
+//Refractoring "organizing" API feature with the help of class usages
+class APIFeatures{
+    //query, queryString :query is the value coming from mongoose means mongoose query n queryString is the one coming from express basically coming from the route
+    constructor(query, queryString) {
+        this.query = query;
+        this.queryString = queryString;
+    }
+    //creating one method for each of the functionality
+    //1st Filtering or filter
+    filter(){
+        const queryObj = {...this.queryString}; //... is called structuring n it's es6  notation n it will take all the fields out the object n create or return new obj for us 
+        const excludedFields = ['page', 'sort', 'limit', 'fields']; //list of elt to be excluded from the obj creation
+        //127.0.0.1:8000/api/v1/tours?difficulty=easy&page=2&sort=1&limit=10  to be check from postman
+        //Removing excluded fields from the object
+        excludedFields.forEach(el => delete queryObj[el]);
+
+        //console.log(req.query);
+
+        //1 B) advanced Filtering
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`); //used in order to fix this problem [duration={$gte:5} duration: { gte: '5' }] bcs we miss $ from req coming
+        this.query = this.query.find(JSON.parse(queryStr));
+        //let query = Tour.find(JSON.parse(queryStr)); //bad practice to tackle drectly with Tour model to be solve with above command line
+        return this; //will return the entire object
+    }
+    //2nd Sorting or sort
+    sort(){
+        if(this.queryString.sort){//means if yes for sorting in req  n req: 127.0.0.1:8000/api/v1/tours?sort=price it's sorting with ascending order if we want descending order ?sort=-price
+            //query = query.sort(req.query.sort); //one field sorting
+            //sorting with multiple fields
+            const sortBy = this.queryString.sort.split(',').join(' ');  //will sort multiple field separate by ','
+            //sort('price ratingsAverage') //here we'll sort with field price n ratingAverage. Req 127.0.0.1:8000/api/v1/tours?sort=price,ratingAverage
+            //console.log(sortBy);
+            this.query = this.query.sort(sortBy); //this.query equal to Tour.find()
+        }else{
+            this.query = this.query.sort('-createdAt'); //will sort by createdAt field descending order if nothing is given or passing in req as sorting param
+        }
+        return this; //will return the entire object
+    }
+    //3rd limitting fields or limit
+    limitFields(){
+        if(this.queryString.fields){ //127.0.0.1:8000/api/v1/tours?fields=name,duration,difficulty,price
+            const fields = this.queryString.fields.split(',').join(' ');
+            this.query = this.query.select(fields); //this is called projection, the selected fields
+        }else{ //127.0.0.1:8000/api/v1/tours?fields=-name,-duration,difficulty,price //moins(-) here means to exclude the field like name n duration will be excluded here
+            //query = query.select('name duration price'); //this one is including this 3 fields when showing
+            this.query = this.query.select('-__v'); //means to exclude this field __v when showing to client
+        }
+        return this;
+    }
+    //4th pagination
+    paginate(){
+        const page = this.queryString.page*1 || 1; //req.query.page*1 will do conversion to a number
+        const limit = this.queryString.limit*1 || 1; //will take converted value or 1
+        const skip = (page - 1) * limit; //means we'll start from the value return by (page - 1) * limit
+        //127.0.0.1:8000/api/v1/tours?page=2&limit=10 //limit 10 means we've 10 result for page1, 10 for page2,.... so we're 1-10=>page1, 11-20=>page2,....
+        this.query = this.query.skip(skip).limit(limit);
+        //condition when combination skip n limit override documents number
+        /*if(this.queryString.page){
+            const numTours = await Tour.countDocuments(); //used to count the number of tour documents
+            if(skip >= numTours) throw new Error('This page does not exist');
+        } this block of code is useless here bcs of that commented*/
+        return this;
+    }
+}
+
+
+//const tours =JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));//JSON.parse() convert json object to js object
+
+/*
+//param middleware used here to avoid  DRY that happened in the below method 
+exports.checkID = (req, res, next, val)=>{
+    console.log(`Tour id is: ${val}`);
+    if(req.params.id * 1 > tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }
+    next();
+}*/
+
+//create a checkBody middleware 
+//check if body contains the name n price property
+//if not, send back 400(bad request)
+//Add it to the post handler stack to do that we'll do router.post(middleware, tourController.createTours);
+
+/*exports.checkBody = (req, res, next) =>{
+    if(!req.body.name || !req.body.price){
+        return res.status(400).json({
+            status: 'fail',
+            message: 'Missing name or price'
+        });
+        
+    } 
+    next();
+}*/
+
+//2) ROUTE HANDLERS
+
+//Organizing code by passing a callback function to a variable n this variable will take at the place of callback function
+
+//retreiving data
+exports.getAllTours = async (req,res)=>{
+    //console.log(req.requestTime);
+
+    try {
+        //Building Query
+        //1 A) Filtering
+        /*const queryObj = {...req.query}; //... is called structuring n it's es6  notation n it will take all the fields out the object n create or return new obj for us 
+        const excludedFields = ['page', 'sort', 'limit', 'fields']; //list of elt to be excluded from the obj creation
+        //127.0.0.1:8000/api/v1/tours?difficulty=easy&page=2&sort=1&limit=10  to be check from postman
+        //Removing excluded fields from the object
+        excludedFields.forEach(el => delete queryObj[el]);
+
+        //console.log(req.query);
+
+        //1 B) advanced Filtering
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`); //used in order to fix this problem [duration={$gte:5} duration: { gte: '5' }] bcs we miss $ from req coming
+        //console.log(JSON.parse(queryStr)); // JSON.parse(queryStr) will return the solution of above problem now only we've match req_string $gte = $gte
+        */
+
+        //console.log(req.query);
+        //{difficulty='easy', duration={$lte:5} } //this one is coming from mongoose it's mongoose query
+        //{difficulty: 'easy', duration: { gte: '5' }} this one is coming from url(express route) n his #ce with above is $
+        //127.0.0.1:8000/api/v1/tours?duration[gte]=5&difficulty=easy
+         
+
+        //filtering with query string which are String coming from req like ?disp='serima'&age=17
+        //console.log(req.query, queryObj) ;//req.query is used to receive the query string
+        
+        
+        //reading documents
+        //const tours = await Tour.find(); //it's mongoose query
+
+        //reading documents with filtering 1st method
+        /*const tours = await Tour.find({
+            duration: 5,difficulty: 'easy'
+        });*/
+        //const tours = await Tour.find(req.query); 
+        //const tours = await Tour.find(queryObj); //with await here we can't do all the filtering like sorting ... in order to fix that we'll used as below
+        //let query = Tour.find(JSON.parse(queryStr));//queryObj to be replace by JSON.parse(queryStr) bcs it comes with match req_string
+
+        //2) Sortings  
+        /*if(req.query.sort){//means if yes for sorting in req  n req: 127.0.0.1:8000/api/v1/tours?sort=price it's sorting with ascending order if we want descending order ?sort=-price
+            //query = query.sort(req.query.sort); //one field sorting
+            //sorting with multiple fields
+            const sortBy = req.query.sort.split(',').join(' ');  //will sort multiple field separate by ','
+            //sort('price ratingsAverage') //here we'll sort with field price n ratingAverage. Req 127.0.0.1:8000/api/v1/tours?sort=price,ratingAverage
+            //console.log(sortBy);
+            query = query.sort(sortBy);
+        }else{
+            query = query.sort('-createdAt'); //will sort by createdAt field descending order if nothing is given or passing in req as sorting param
+        }*/
+
+        //3) Field limiting for sorting
+        /*if(req.query.fields){ //127.0.0.1:8000/api/v1/tours?fields=name,duration,difficulty,price
+            const fields = req.query.fields.split(',').join(' ');
+            query = query.select(fields); //this is called projection, the selected fields
+        }else{ //127.0.0.1:8000/api/v1/tours?fields=-name,-duration,difficulty,price //moins(-) here means to exclude the field like name n duration will be excluded here
+            //query = query.select('name duration price'); //this one is including this 3 fields when showing
+            query = query.select('-__v'); //means to exclude this field __v when showing to client
+        }*/
+
+        //4)Pagination it's showing by page with the help of skipping n limiting
+
+        /*const page = req.query.page*1 || 1; //req.query.page*1 will do conversion to a number
+        const limit = req.query.limit*1 || 1; //will take converted value or 1
+        const skip = (page - 1) * limit; //means we'll start from the value return by (page - 1) * limit
+        //127.0.0.1:8000/api/v1/tours?page=2&limit=10 //limit 10 means we've 10 result for page1, 10 for page2,.... so we're 1-10=>page1, 11-20=>page2,....
+        query = query.skip(skip).limit(limit);
+        //condition when combination skip n limit override documents number
+        if(req.query.page){
+            const numTours = await Tour.countDocuments(); //used to count the number of tour documents
+            if(skip >= numTours) throw new Error('This page does not exist');
+        }*/
+
+        //reading documents with filtering 2st method which goes with abstraction layer of mongodb which r special mongoose method
+        /*const query = Tour.find().where('duration').equals(5).where('difficulty').equals('easy');
+        */
+        
+        //Executing Query
+        const features = new APIFeatures(Tour.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate(); //used to run the code of our APIFeatures class functionality
+        const tours = await features.query; //will fire the following method query.sort().select().skip().limit()
+
+        //Send Response
+        res.status(200).json({
+            status:'success',
+            //requestAt: req.requestTime,
+            result: tours.length,
+            data:{
+                //tours:tours //if it's like that means key n value have same name we can keep only one(means take only key or value) in ec6
+                tours
+            }
+        })
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err
+        });
+    }
+    
+    };
+
+    //accessing a specific data means send with specific id
+exports.getTours = async (req,res)=>{ //id can be any variable name
+    //console.log(req.params); //used to have info about the parameter we're passing on url like :id
+    try {
+        const tour = await Tour.findById(req.params.id); // Tour.findById(req.params.id) same as Tour.findOne({_id:req.params.id}) it's a short form that
+        
+        res.status(200).json({
+            status:'success',
+            data:{
+                tour
+            }
+        })
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err
+        });
+    }
+    
+    };
+
+    //Creating data
+exports.createTours = async (req,res) =>{
+    try {
+        //creating a tour object
+        //const newTour = new Tour({});
+        //newTour.save();
+
+        //simple way to create a tour object
+        const newTour = await Tour.create(req.body); //req.body is the data that come with the post req
+        
+        res.status(201).json({
+            status:'success',
+            data:{
+                tour:newTour
+            }
+        }); 
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err //or either this msg 'Invalid data send'
+        });
+    }
+    
+};
+
+//updating data
+exports.updateTours = async (req,res)=>{
+
+    //DRY here to be delete n replace by exports.checkID
+
+    try {
+        const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,//means new updated doc will be returned
+            runValidators:true, //if true, run validators on this command n validate the update operation against model's schema
+        });
+        res.status(200).json({
+            status:'success',
+            data:{
+                tour
+            }
+        }) 
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err
+        });
+    }
+
+    
+    };
+
+    //deleting data
+exports.deleteTours = async (req,res)=>{
+//the below block of code(the comment block) is repeating  with the above method so that is DRY in order to avoid that the should be replace by param middleware
+    
+    try {
+        await Tour.findByIdAndDelete(req.params.id);
+        res.status(204).json({ //204 means there is no content
+            status:'success',
+            data: null //it's a common pratice to not send a data to a user when deleting operation
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err
+        }); 
+    }
+
+    
+    };

@@ -1,0 +1,38 @@
+extends base
+
+block content
+    main.main
+        //-(style="max-width: 80rem;min-height: 60vh;position:absolute;right:30px;top:50px;margin-top:-530px;margin-left:350px;")
+        .user-view(style="display:inline-block;")
+            .user-view__content
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-md Uploding images
+
+                    form.form.form-user-courseI(enctype='multipart/form-data')
+                        .form__group.form__photo-upload
+                            input#cours-id.form__input(type='hidden', value=`${up._id}`)
+                            .accordion
+                                input.accordion-select(type="radio" name="select")
+                                .accordion-title
+                                    label.form__label(for='email') Images   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nabla;
+                                .accordion-content
+                                    - var iu = 0
+                                    each star in up.images
+                                        label(for='photo', style='display:block;background-color:#cdffdf;')=`Images${iu+1}` 
+                                        input.form__upload1(type='file', accept='image/*',value=`${star}`, name=`images`, id=`photo_${iu}`, required)
+                                        - iu += 1
+                                    input#images.form__input(type='hidden', value=`${iu}`)
+
+                            //-.form__group.form__photo-upload
+                            //-.line &nbsp;
+
+                        .form__group.form__photo-upload
+
+                            label.form__user-photo(for='name') Image cover
+                            //- accept='image/*' will accept all type of image , class='imageCover' , multiple='multiple'
+                            input.form__upload(type='file', accept='image/*', id='photo1', name='imageCover', value=`${up.imageCover}`, class=`imageCover`, required)
+                            label(for='photo1') Image Cover
+                            
+
+                        .form__group.right
+                            button.btn.btn--small.btn--reviewUpd(style='background:#1572ac;color:white;') Update

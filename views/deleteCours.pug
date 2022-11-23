@@ -1,0 +1,63 @@
+extends base
+
+block content
+    main.main
+        .card-container(style="margin-top:-15px;")
+            .card
+                .card__header
+                    .card__picture
+                        .card__picture-overlay &nbsp;
+                        img.card__picture-img(src=`/img/tours/${trs.imageCover}`, alt=`${trs.name}`)
+                    h3.heading-tertirary
+                        span= trs.name
+
+                .card__details
+                    h4.card__sub-heading= `${trs.difficulty} ${trs.duration}-day tours`
+                    p.card__text= trs.summary
+                    .card__data
+                        svg.card__icon
+                            use(xlink:href="/img/icons.svg#icon-dollar-sign")
+                        span= trs.price
+                    .card__data
+                        svg.card__icon
+                            use(xlink:href='/img/icons.svg#icon-calendar')
+                        span= trs.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
+                    .card__data
+                        svg.card__icon
+                            use(xlink:href="/img/icons.svg#icon-user")
+                        span= `rating (${trs.ratingsQuantity})`
+                    .card__data
+                        a.btn.btn--green.btn--small(href=`/tour/${trs.slug}`) Details
+
+        .user-view(style="margin-top:-530px;margin-left:350px;display:inline-block;")
+            .user-view__content
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-md Deleting tours
+
+                    form.form.form-user-coursed(enctype='multipart/form-data')
+                        .form__group
+                            label.form__label(for='name') tours name
+                            input#name.form__input(type='text', required, value=`${review.name}`, disabled, name='name')
+                            label.form__label(for='name') Duration
+                            input#duration.form__input(type='number', required, value=`${review.duration}`, disabled, name='duration')
+                            label.form__label(for='name') Max Group Size
+                            input#maxgroupsize.form__input(type='number', required, value=`${review.maxGroupSize}`, disabled, name='maxgroupsize')
+                            label.form__label(for='email') Difficulty
+                            input#difficulty.form__input(list='email', required, value=`${review.difficulty}`, disabled, name='difficulty')
+                            datalist#email
+                                option(value='easy')
+                                option(value='medium')
+                                option(value='difficult')
+                            label.form__label(for='email') Ratings Average 
+                            input#average.form__input(type='number', value=`${review.ratingsAverage}`, disabled, min=1, max=5, name='average')
+                            label.form__label(for='email') Ratings Quantity 
+                            input#quantity.form__input(type='number', value=`${review.ratingsQuantity}`, disabled, name='quantity')
+
+                        .form__group.ma-bt-md
+                            label.form__label(for='name') Price
+                            input#price.form__input(type='number', required, value=`${review.price}`, disabled, name='price')
+                            //- label.form__label(for='name') Cours category
+                            //- input#course.form__input(type='text', required, value=`${review.category}`, disabled, name='course')
+                            input#cours-id.form__input(type='hidden', value=`${review._id}`)
+                        .form__group.right
+                            button.btn.btn--small.btn--reviewUpd1(style='background:#1572ac;color:white;') Do you want to delete?

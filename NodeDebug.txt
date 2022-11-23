@@ -1,0 +1,17 @@
+ndb package stand for Node Debugger used for node debuging purposes.
+
+jsonwebtoken package is used for authentification purpose we're authenticating enduser
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter> npm i jsonwebtoken
+
+added 14 packages, and audited 286 packages in 13s
+
+61 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS D:\PROJECT\complete-node-bootcamp-master\4-natours\starter>
+
+config.env file
+JWT_SECRET = can-we-learn-snake-to-program-on-python-my-only-secret //secret key string value used for authentication
+JWT_EXPIRES_IN = 90d  //expire period here 90 days means after 90 days jwt will not be valid
+JWT_COOKIE_EXPIRES_IN=90 //json web token cookie expired time here 90 days

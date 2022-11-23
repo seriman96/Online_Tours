@@ -1,0 +1,52 @@
+//- base.pug will used this file or will be extended with this file 
+//- n it's used to embde this block of code into base.pug page
+extends base
+
+block content
+    main.main
+        .user-view__content
+            .user-view__form-container(style='border:1px solid #ff0000;background-color:#aacbdd;')
+                h2.heading-secondary.ma-bt-md Update Tours
+                form.form.form-user-queryU
+                        .form__group
+                            label.form__label(for='name') Tours
+                            input#price.form__input(type='text', required, name='price', placeholder='Airfel Tours')
+                        .form__group.right
+                            button.btn.btn--small.btn--green Update
+            .line &nbsp;
+            .card-container(style='margin-top: 80px;')
+                //-looping on pug
+                each trs in tour
+                    .card
+                        .card__header
+                            .card__picture
+                                .card__picture-overlay &nbsp;
+                                img.card__picture-img(src=`/img/tours/${trs.imageCover}`, alt=`${trs.name}`)
+                            h3.heading-tertirary
+                                span= trs.name
+
+                        .card__details
+                            h4.card__sub-heading= `${trs.difficulty} ${trs.duration}-day cours`
+                            p.card__text= trs.summary
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href="/img/icons.svg#icon-dollar-sign")
+                                span= trs.price
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-calendar')
+                                span= trs.startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href="/img/icons.svg#icon-user")
+                                span= `rating (${trs.ratingsQuantity})`
+                            .card__data
+                                a.edit.btn--cours(href=`/cours/${trs._id}`)  
+                                    svg.card__icon
+                                        use(xlink:href="/img/icons.svg#icon-edit-2")
+                                    
+                                a.edit.btn--cours(href=`/cour/${trs._id}`) 
+                                    svg.card__icon
+                                        use(xlink:href="/img/icons.svg#icon-delete")
+
+                                a.btn.btn--green.btn--small(href=`/tour/${trs.slug}`) Details

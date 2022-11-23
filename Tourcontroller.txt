@@ -1,0 +1,126 @@
+const fs = require('fs');
+const Tour = require('./../models/tourModel') //importing the tour models from tourModel.js file as we're MVC
+
+const tours =JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));//JSON.parse() convert json object to js object
+
+//param middleware used here to avoid  DRY that happened in the below method 
+exports.checkID = (req, res, next, val)=>{
+    console.log(`Tour id is: ${val}`);
+    if(req.params.id * 1 > tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }
+    next();
+}
+
+//create a checkBody middleware 
+//check if body contains the name n price property
+//if not, send back 400(bad request)
+//Add it to the post handler stack to do that we'll do router.post(middleware, tourController.createTours);
+
+exports.checkBody = (req, res, next) =>{
+    if(!req.body.name || !req.body.price){
+        return res.status(400).json({
+            status: 'fail',
+            message: 'Missing name or price'
+        });
+        
+    } 
+    next();
+}
+
+//2) ROUTE HANDLERS
+
+//Organizing code by passing a callback function to a variable n this variable will take at the place of callback function
+
+//retreiving data
+exports.getAllTours = (req,res)=>{
+    console.log(req.requestTime);
+    res.status(200).json({
+        status:'success',
+        requestAt: req.requestTime,
+        result: tours.length,
+        data:{
+            //tours:tours //if it's like that means key n value have same name we can keep only one(means take only key or value) in ec6
+            tours
+        }
+    })
+    };
+
+    //accessing a specific data means send with specific id
+exports.getTours = (req,res)=>{ //id can be any variable name
+    //console.log(req.params); //used to have info about the parameter we're passing on url like :id
+    
+    const id = req.params.id * 1; //used to convert id coming from url into an integer
+    
+    const tour = tours.find(el => el.id===id) //find in tours file when elt_id = id we've got from url
+
+    //DRY it will be avoid exports.checkID
+    
+    //or
+    /*
+    if(id > tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }*/
+
+    
+    res.status(200).json({
+        status:'success',
+        data:{
+            tour
+        }
+    })
+    };
+
+    //Creating data
+exports.createTours = (req,res) =>{
+    //console.log(req.body);
+    const newId = tours[tours.length - 1].id + 1; //getting next id "newId" by getting last id + 1
+    const newTour = Object.assign({id: newId}, req.body); //Object.assign is basically allowed us to create a new object by merging it to the existing object together
+    tours.push(newTour); //pushed the new data into the old
+
+    fs.writeFile(`${__dirname}/../dev-data/data/tours-simple.json`, JSON.stringify(tours), err=>{ //JSON.stringify used to convert js object into JSON file
+        //status code meaning 200:ok; 201:created
+        res.status(201).json({
+            status:'success',
+            data:{
+                tour:newTour
+            }
+        });
+    });
+    //res.send('done!'); so sending 2 responses are not allowed
+};
+
+//updating data
+exports.updateTours =(req,res)=>{
+
+    //DRY here to be delete n replace by exports.checkID
+
+    res.status(200).json({
+        status:'success',
+        data:{
+            tour:'<Updated tour here....>'
+        }
+    })
+    };
+
+    //deleting data
+exports.deleteTours = (req,res)=>{
+//the below block of code(the comment block) is repeating  with the above method so that is DRY in order to avoid that the should be replace by param middleware
+    /*if(req.params.id * 1 > tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }*/
+
+    res.status(204).json({ //204 means there is no content
+        status:'success',
+        data: null
+    })
+    };

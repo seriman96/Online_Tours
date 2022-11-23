@@ -1,0 +1,39 @@
+doctype html
+html
+    head
+        //- extends head block here and with a append techniq to the tour.pug
+        block head
+            meta(charset='UTF-8')
+            meta(name='viewport' content='width=device-width, initial-scale=1.0')
+            //- meta(http-equiv="Content-Security-Policy", content="https://*.tiles.mapbox.com https://api.mapbox.com https://events.mapbox.com")
+            
+            title Natours | #{title}
+            link(rel="stylesheet" href="/css/style.css")
+            link(rel='shortcut icon' type='image/png' href='/img/favicon.pug')
+            link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,300i,700')
+    body
+        //HEADER
+        //-Inclusion techn
+        include _header
+        
+        //CONTENT
+        //- extending concept means to extend base page content here to an external content
+        block content
+            h1 This is a placeholder heading.
+
+        //FOOTER
+        include _footer
+
+        //- used for using js file here
+        //- below script is used to extend axios in a global stage so we can used everywhere in project template
+        //-script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js')
+        //-script(src='/js/mapbox.js')
+        script(src='https://api.mapbox.com/styles/v1/doumbia/cl4hftgu1004i15nyp898pnv1?access_token=pk.eyJ1IjoiZG91bWJpYSIsImEiOiJjbDRnMG5zMHAwNGRyM2tsazR3cXp4N2g5In0.t-cHs4xfwGx7TucmAqaU4w')
+
+        script(src='//code.jquery.com/jquery-1.9.1.js')
+        script(src='//code.jquery.com/ui/1.10.4/jquery-ui.js')
+
+        //-below file contain all the code that's in all the other files n all their dependencies means all above dependencies will be in this file
+        script(src='https://js.stripe.com/v3/')
+        script(src='/js/bundle.js', nonce="12331")
+        //- script(src='/js/bundle.js.map', nonce="12331")

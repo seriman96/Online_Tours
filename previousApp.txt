@@ -1,0 +1,254 @@
+const express = require('express'); //express importation
+const fs = require('fs');
+const morgan = require('morgan');//morgan usage used for logging middleware
+
+const app = express();//used to access all the methods of express
+
+
+
+//1) MIDDLEWARES
+app.use(morgan('dev')) //dev stand for development n morgan logging middleware usage after importing through require n gives info about req coming from user n it has #t value like dev tiny...
+app.use(express.json()); //express.json() is a middleware used to modify the incoming data, without middleware we can't intermediate with incoming req so means no post req
+
+//middleware usages
+
+app.use((req, res, next) => { //next param is used to send the result to the client
+    console.log('Hello from the middleware 👍');
+    next();//should be used always
+});
+
+app.use((req, res, next) => { 
+    req.requestTime = new Date().toISOString();//return current time of the req n in a very good readable format with respect to toISOString()
+    next();
+})
+
+/*
+//routing
+app.get('/', (req, res) => { //get method
+    //res.status(200).send('Hello from the server side!');//instead of sending msg we can send a json object
+    res
+    .status(404)
+    .json({message: 'Hello from the server side', app: 'Natours'}); //so this is api usage
+})
+
+app.post('/', (req, res) => { //post method
+    res.send('You can post to this endpoint');
+})
+*/
+
+//2) ROUTE HANDLERS
+
+//Organizing code by passing a callback function to a variable n this variable will take at the place of callback function
+
+//retreiving data
+const getAllTours = (req,res)=>{
+    console.log(req.requestTime);
+    res.status(200).json({
+        status:'success',
+        requestAt: req.requestTime,
+        result: tours.length,
+        data:{
+            //tours:tours //if it's like that means key n value have same name we can keep only one(means take only key or value) in ec6
+            tours
+        }
+    })
+    };
+
+    //accessing a specific data means send with specific id
+const getTours = (req,res)=>{ //id can be any variable name
+    //console.log(req.params); //used to have info about the parameter we're passing on url like :id
+    
+    const id = req.params.id * 1; //used to convert id coming from url into an integer
+    
+    const tour = tours.find(el => el.id===id) //find in tours file when elt_id = id we've got from url
+
+    if(!tour){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }
+    //or
+    /*
+    if(id > tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }*/
+
+    
+    res.status(200).json({
+        status:'success',
+        data:{
+            tour
+        }
+    })
+    };
+
+    //Creating data
+const createTours = (req,res) =>{
+    //console.log(req.body);
+    const newId = tours[tours.length - 1].id + 1; //getting next id "newId" by getting last id + 1
+    const newTour = Object.assign({id: newId}, req.body); //Object.assign is basically allowed us to create a new object by merging it to the existing object together
+    tours.push(newTour); //pushed the new data into the old
+
+    fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err=>{ //JSON.stringify used to convert js object into JSON file
+        //status code meaning 200:ok; 201:created
+        res.status(201).json({
+            status:'success',
+            data:{
+                tour:newTour
+            }
+        });
+    });
+    //res.send('done!'); so sending 2 responses are not allowed
+};
+
+//updating data
+const updateTours =(req,res)=>{
+
+    if(req.params.id * 1 > tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }
+
+    res.status(200).json({
+        status:'success',
+        data:{
+            tour:'<Updated tour here....>'
+        }
+    })
+    };
+
+    //deleting data
+const deleteTours = (req,res)=>{
+
+    if(req.params.id * 1 > tours.length){
+        return res.status(404).json({
+            status:'fail',
+            message:'Invalid ID'
+        });
+    }
+
+    res.status(204).json({ //204 means there is no content
+        status:'success',
+        data: null
+    })
+    };
+
+const getAllUsers = (req, res) => {
+    //500 status code means internal server error 
+    res.status(500).json({ 
+        status: 'error',
+        message: 'This route is not yet defined!'
+     });
+}  
+
+const getUser = (req, res) => {
+    //500 status code means internal server error 
+    res.status(500).json({ 
+        status: 'error',
+        message: 'This route is not yet defined!'
+     });
+} 
+
+const createUser = (req, res) => {
+    //500 status code means internal server error 
+    res.status(500).json({ 
+        status: 'error',
+        message: 'This route is not yet defined!'
+     });
+}    
+
+const updateUser = (req, res) => {
+    //500 status code means internal server error 
+    res.status(500).json({ 
+        status: 'error',
+        message: 'This route is not yet defined!'
+     });
+} 
+
+const deleteUser = (req, res) => {
+    //500 status code means internal server error 
+    res.status(500).json({ 
+        status: 'error',
+        message: 'This route is not yet defined!'
+     });
+}    
+
+const tours =JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));//JSON.parse() convert json object to js object
+
+//3) ROUTE
+
+
+//app.get('/api/v1/tours', getAllTours);
+
+//define a route which can accept a variable
+
+//'/api/v1/tours/:id/:x/:y' here we've 3 elts on parameters
+//'/api/v1/tours/:id/:x/:y?' :y with ? make a param elt optional means we can omit(neglect) for y value when passing url
+//app.get('/api/v1/tours/:id', getTours);
+
+//creating a data
+//app.post('/api/v1/tours', createTours);
+
+//updating data
+//we've 2 http methods for updating data n they're put n patch n #ce is patch is specific n put is all that's y we prefer patch than put
+//app.patch('/api/v1/tours/:id', updateTours);
+
+//Deleting
+//app.delete('/api/v1/tours/:id', deleteTours);
+
+//creating one seperate router for each resources
+
+const tourRouter = express.Router(); //create router for Tour resources n app variable will be replace to the router created 
+const userRouter = express.Router();
+
+//connecting new router with our application so to do that we should use it as middleware done by following code
+//this techniq is called mounting a router
+app.use('/api/v1/tours', tourRouter); // so tourRouter is also a middleware n will capture /api/v1/tours url so means it replaces this url
+app.use('/api/v1/users', userRouter);
+
+//Better way to do above routing with a new routing tech
+tourRouter // tourRouter already contain this /api/v1/tours
+.route('/') //here either api/v1/tours we've / bcs of tourRouter
+.get(getAllTours)
+.post(createTours)
+
+/*middleware
+app.use((req, res, next) => { //next param is used to send the result to the client
+    console.log('Hello from the middleware 👍');
+    next();
+});//this block of code won't be executed bcs the req resp cycle is closed due to the fact that the get() will execute getAllTours with callback funct so
+//the order matter here.*/
+
+tourRouter
+.route('/:id')
+.get(getTours)
+.patch(updateTours)
+.delete(deleteTours)
+
+//implementing some route for user resources
+userRouter
+.route('/')
+.get(getAllUsers)
+.post(createUser);
+
+userRouter
+.route('/:id')
+.get(getUser)
+.patch(updateUser)
+.delete(deleteUser);
+
+//4) START SERVER
+
+const port = 3000;
+app.listen(port, ()=>{
+    console.log(`App running on port ${port}`);
+});
+
+//param middleware is middleware that only run for some parameter
+
